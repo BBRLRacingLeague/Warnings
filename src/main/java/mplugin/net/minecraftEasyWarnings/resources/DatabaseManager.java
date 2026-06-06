@@ -36,13 +36,13 @@ public class DatabaseManager {
                                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                                     culprit UUID SECONDARY KEY,
                                     issuer UUID SECONDARY KEY,
-                                    reason TEXT
+                                    reason TEXT,
+                                    origin VAR_CHAR(10)
                                 )
                             """);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     public void closeDatabase() {
