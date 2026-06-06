@@ -30,12 +30,12 @@ public class WebhookService {
     }
 
     public void sendError(String errorMessage){
-        StringBuilder json = new StringBuilder("""
+        String json = """
                 {
                     "content": "%s",
                     "username": "Warnings Bot"
                 }
-                """.formatted(errorMessage));
-        sendRequest(json.toString(), TROUBLESHOOT_WEBHOOK_URL);
+                """.formatted(errorMessage);
+        sendRequest(json, TROUBLESHOOT_WEBHOOK_URL);
     }
 }
