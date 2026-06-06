@@ -33,8 +33,8 @@ public class DatabaseManager {
         try (Statement stmt = connection.createStatement()) {
             stmt.execute("""
                                 CREATE TABLE IF NOT EXISTS regions (
-                                    id INTEGER,
-                                    culprit UUID PRIMARY KEY,
+                                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                                    culprit UUID SECONDARY KEY,
                                     issuer UUID SECONDARY KEY,
                                     reason TEXT
                                 )
