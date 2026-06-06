@@ -24,6 +24,10 @@ public final class MinecraftEasyWarnings extends JavaPlugin {
         WebhookService webhookService = new WebhookService(this);
     }
 
+    @Override void onLoad(){
+        saveDefaultConfig();
+    }
+
     @Override
     public void onDisable() {
         databaseManager.closeDatabase();
