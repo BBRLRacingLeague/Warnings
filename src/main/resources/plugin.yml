@@ -3,3 +3,10 @@ version: '1.0'
 main: mplugin.net.minecraftEasyWarnings.MinecraftEasyWarnings
 api-version: '1.21'
 authors: [ Dillsteamgamer ]
+
+commands:
+    warn:
+      description: Issue a warning to a player
+      permission: warnings.moderator
+      default: op
+      usage: /warn <Player> <Reason>

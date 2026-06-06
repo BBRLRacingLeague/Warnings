@@ -1,3 +1,10 @@
 #Webhook URLS
 TROUBLESHOOT_WEBHOOK_URL: "DISCORD WEBHOOK URL"
 WARN_LOG_WEBHOOK_URL: "DISCORD WEBHOOK URL"
+
+#Warn Reasons -- See e.g. below
+WARN_REASONS:
+  - 1
+  - 2a
+  - 2b
+  - 3
