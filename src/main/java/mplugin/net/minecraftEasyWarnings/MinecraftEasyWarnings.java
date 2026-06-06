@@ -24,7 +24,8 @@ public final class MinecraftEasyWarnings extends JavaPlugin {
         WebhookService webhookService = new WebhookService(this);
     }
 
-    @Override void onLoad(){
+    @Override
+    public void onLoad(){
         saveDefaultConfig();
     }
 
