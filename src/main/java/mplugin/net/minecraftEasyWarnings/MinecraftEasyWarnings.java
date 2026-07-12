@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.Connection;
@@ -27,11 +28,18 @@ public final class MinecraftEasyWarnings extends JavaPlugin {
         databaseManager.initDatabase();
         databaseConnection = databaseManager.getConnection();
 
+        if(databaseConnection == null){
+            Bukkit.getPluginManager().disablePlugin(this);
+            return;
+        }
+
         //Set up Webhook Service
         WebhookService webhookService = new WebhookService(this);
 
         //Load Minecraft commands
-        Objects.requireNonNull(getCommand("warn")).setExecutor(new Warn(this, databaseConnection, webhookService));
+        Warn warnCommand = new Warn(this, databaseConnection, webhookService);
+        Objects.requireNonNull(getCommand("warn")).setExecutor(warnCommand);
+        Objects.requireNonNull(getCommand("warn")).setTabCompleter(warnCommand);
         Objects.requireNonNull(getCommand("warnings")).setExecutor(new Warnings(this, databaseConnection, webhookService));
         Objects.requireNonNull(getCommand("deleteWarning")).setExecutor(new DeleteWarning(this, databaseConnection, webhookService));
 

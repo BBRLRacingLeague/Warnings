@@ -20,7 +20,7 @@ public class DatabaseManager {
             // Ensure plugin folder exists
             if (!plugin.getDataFolder().exists()) plugin.getDataFolder().mkdirs();
 
-            File dbFile = new File(plugin.getDataFolder(), "regions.db");
+            File dbFile = new File(plugin.getDataFolder(), "warnings.db");
             String url = "jdbc:sqlite:" + dbFile.getAbsolutePath();
 
             connection = DriverManager.getConnection(url);
@@ -28,16 +28,17 @@ public class DatabaseManager {
             plugin.getLogger().info("SQLite database initialized successfully.");
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Failed to initialize SQLite database!", e);
+            return;
         }
 
         try (Statement stmt = connection.createStatement()) {
             stmt.execute("""
-                                CREATE TABLE IF NOT EXISTS regions (
+                                CREATE TABLE IF NOT EXISTS warnings (
                                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                                    culprit UUID SECONDARY KEY,
-                                    issuer VARCHAR(40) SECONDARY KEY,
+                                    culprit TEXT,
+                                    issuer TEXT,
                                     reason TEXT,
-                                    origin VAR_CHAR(10)
+                                    origin TEXT
                                 )
                             """);
         } catch (SQLException e) {

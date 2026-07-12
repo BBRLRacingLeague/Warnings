@@ -44,7 +44,7 @@ public class DeleteWarning implements CommandExecutor {
             ps.setInt(1, Integer.parseInt(args[0]));
             try(ResultSet resultSet = ps.executeQuery()){
                 if(resultSet.next()) {
-                    warn = "Culprit: " + resultSet.getString("culprit") + "\nReason: " + resultSet.getString("reason");
+                    warn = "Culprit: " + resultSet.getString("culprit") + "\nReason: " + escapeJson(resultSet.getString("reason"));
                 }else{
                     commandSender.sendMessage("§4No warning with that ID exists!");
                     return true;
@@ -80,5 +80,14 @@ public class DeleteWarning implements CommandExecutor {
         }
 
         return true;
+    }
+
+    private String escapeJson(String text) {
+        return text
+                .replace("\\", "\\\\")
+                .replace("\"", "\\\"")
+                .replace("\n", "\\n")
+                .replace("\r", "\\r")
+                .replace("\t", "\\t");
     }
 }

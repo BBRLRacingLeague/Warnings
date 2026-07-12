@@ -115,8 +115,17 @@ public class Warn implements CommandExecutor, TabCompleter {
                         }
                     ]
                 }
-                """.formatted(culprit, sender, reason);
+                """.formatted(escapeJson(culprit), escapeJson(sender), escapeJson(reason));
         webhookService.sendRequest(json, plugin.getConfig().getString("WARN_LOG_WEBHOOK_URL"));
+    }
+
+    private String escapeJson(String text) {
+        return text
+                .replace("\\", "\\\\")
+                .replace("\"", "\\\"")
+                .replace("\n", "\\n")
+                .replace("\r", "\\r")
+                .replace("\t", "\\t");
     }
 
     @Override

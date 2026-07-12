@@ -8,7 +8,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 public class WebhookService {
-    public String TROUBLESHOOT_WEBHOOK_URL;
+    private final String TROUBLESHOOT_WEBHOOK_URL;
 
     public WebhookService(JavaPlugin plugin){
         TROUBLESHOOT_WEBHOOK_URL = plugin.getConfig().getString("TROUBLESHOOT_WEBHOOK_URL");
@@ -23,7 +23,7 @@ public class WebhookService {
                 .build();
 
         try {
-            client.send(request, HttpResponse.BodyHandlers.ofString());
+            client.sendAsync(request, HttpResponse.BodyHandlers.ofString());
         }catch(Exception e){
             sendError("Error: \n" + e);
         }
