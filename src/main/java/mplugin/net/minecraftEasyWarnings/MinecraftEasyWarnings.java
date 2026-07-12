@@ -1,5 +1,6 @@
 package mplugin.net.minecraftEasyWarnings;
 
+import mplugin.net.minecraftEasyWarnings.minecraftCommands.DeleteWarning;
 import mplugin.net.minecraftEasyWarnings.minecraftCommands.Warn;
 import mplugin.net.minecraftEasyWarnings.minecraftCommands.Warnings;
 import mplugin.net.minecraftEasyWarnings.resources.DatabaseManager;
@@ -27,6 +28,7 @@ public final class MinecraftEasyWarnings extends JavaPlugin {
         //Load Minecraft commands
         Objects.requireNonNull(getCommand("warn")).setExecutor(new Warn(this, databaseConnection, webhookService));
         Objects.requireNonNull(getCommand("warnings")).setExecutor(new Warnings(this, databaseConnection, webhookService));
+        Objects.requireNonNull(getCommand("deleteWarning")).setExecutor(new DeleteWarning(this, databaseConnection, webhookService));
     }
 
     @Override
