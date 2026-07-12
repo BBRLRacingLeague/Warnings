@@ -63,7 +63,7 @@ public class Warn implements CommandExecutor, TabCompleter {
 
         //If warn reason contains a ';' then we can assume an SQL Injection is taking place -- no logical reason to use one in a warning message
         if(reason.contains(";")){
-            sender.sendMessage("§4SQL Injection Detector Activated, command not running!");
+            sender.sendMessage("§4Invalid character detected in reason!");
             webhookService.sendError("SQL Injection Attempt Recognised!\nSender: " + sender.getName() + "\nReason: \"" + reason + "\"");
             return true;
         }

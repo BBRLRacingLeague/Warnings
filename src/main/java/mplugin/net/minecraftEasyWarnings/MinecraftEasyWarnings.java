@@ -1,6 +1,7 @@
 package mplugin.net.minecraftEasyWarnings;
 
 import mplugin.net.minecraftEasyWarnings.minecraftCommands.Warn;
+import mplugin.net.minecraftEasyWarnings.minecraftCommands.Warnings;
 import mplugin.net.minecraftEasyWarnings.resources.DatabaseManager;
 import mplugin.net.minecraftEasyWarnings.resources.WebhookService;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -25,6 +26,7 @@ public final class MinecraftEasyWarnings extends JavaPlugin {
 
         //Load Minecraft commands
         Objects.requireNonNull(getCommand("warn")).setExecutor(new Warn(this, databaseConnection, webhookService));
+        Objects.requireNonNull(getCommand("warnings")).setExecutor(new Warnings(this, databaseConnection, webhookService));
     }
 
     @Override

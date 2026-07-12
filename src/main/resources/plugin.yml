@@ -10,3 +10,8 @@ commands:
       permission: warnings.moderator
       default: op
       usage: /warn <Player> <Reason>
+    warnings:
+      description: Check the warnings a player has
+      permission: warnings.moderator
+      default: op
+      usage: /warnings <Player>
