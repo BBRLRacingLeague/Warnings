@@ -30,7 +30,7 @@ public class Warnings implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] args) {
         //Ensure only 1 argument is entered (a player name presumably)
         if(args.length != 1){
-            commandSender.sendMessage("§4Invalid arguments, do '/warnings {user}");
+            commandSender.sendMessage("§4Invalid arguments, do '/warnings {user}'");
             return true;
         }
 
