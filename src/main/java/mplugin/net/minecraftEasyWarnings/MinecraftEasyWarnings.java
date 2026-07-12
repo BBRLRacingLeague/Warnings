@@ -57,8 +57,8 @@ public final class MinecraftEasyWarnings extends JavaPlugin {
                             .addOption(OptionType.STRING, "Warning ID", "", true)
             ).queue();
         } catch (InterruptedException e) {
-            webhookService.sendError("SQL Error:\\n" + e);
-            getLogger().log(Level.SEVERE,"SQL Error", e);
+            webhookService.sendError("Discord Bot Error:\n" + e);
+            getLogger().log(Level.SEVERE,"Discord Bot Error:\n" + e);
         }
 
     }
