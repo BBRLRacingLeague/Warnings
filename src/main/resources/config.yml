@@ -1,10 +1,11 @@
-#Webhook URLS
+#Discord
 TROUBLESHOOT_WEBHOOK_URL: "DISCORD WEBHOOK URL"
 WARN_LOG_WEBHOOK_URL: "DISCORD WEBHOOK URL"
+DISCORD_BOT_TOKEN: "BOT TOKEN"
 
 #Warn Reasons -- See e.g. below
 WARN_REASONS:
-  - 1
-  - 2a
-  - 2b
-  - 3
+  - 1 Spam
+  - 2a Idk
+  - 2b Cba
+  - 3 Tldr

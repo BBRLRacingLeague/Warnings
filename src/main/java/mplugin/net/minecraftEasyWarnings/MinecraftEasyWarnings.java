@@ -5,10 +5,15 @@ import mplugin.net.minecraftEasyWarnings.minecraftCommands.Warn;
 import mplugin.net.minecraftEasyWarnings.minecraftCommands.Warnings;
 import mplugin.net.minecraftEasyWarnings.resources.DatabaseManager;
 import mplugin.net.minecraftEasyWarnings.resources.WebhookService;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.Connection;
 import java.util.Objects;
+import java.util.logging.Level;
 
 public final class MinecraftEasyWarnings extends JavaPlugin {
 
@@ -29,6 +34,25 @@ public final class MinecraftEasyWarnings extends JavaPlugin {
         Objects.requireNonNull(getCommand("warn")).setExecutor(new Warn(this, databaseConnection, webhookService));
         Objects.requireNonNull(getCommand("warnings")).setExecutor(new Warnings(this, databaseConnection, webhookService));
         Objects.requireNonNull(getCommand("deleteWarning")).setExecutor(new DeleteWarning(this, databaseConnection, webhookService));
+
+        //Load Discord Bot
+        try {
+            JDA jda = JDABuilder.createDefault(getConfig().getString("BOT_TOKEN")).addEventListeners(new DiscordBot(this, databaseConnection, webhookService)).build();
+            jda.awaitReady();
+            jda.updateCommands().addCommands(
+                    Commands.slash("warn", "Warn a user -- NOTE: Use their minecraft username!")
+                            .addOption(OptionType.STRING, "Minecraft Name", "", true)
+                            .addOption(OptionType.STRING, "Reason", "", true),
+                    Commands.slash("warnings", "Check the warnings a user has -- NOTE: Use their minecraft username!")
+                            .addOption(OptionType.STRING, "Minecraft Name", "", true),
+                    Commands.slash("deleteWarning", "Delete a warning by its ID!")
+                            .addOption(OptionType.STRING, "Warning ID", "", true)
+            ).queue();
+        } catch (InterruptedException e) {
+            webhookService.sendError("SQL Error:\\n" + e);
+            getLogger().log(Level.SEVERE,"SQL Error", e);
+        }
+
     }
 
     @Override
