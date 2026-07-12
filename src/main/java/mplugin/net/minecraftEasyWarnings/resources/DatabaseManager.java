@@ -35,7 +35,7 @@ public class DatabaseManager {
                                 CREATE TABLE IF NOT EXISTS regions (
                                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                                     culprit UUID SECONDARY KEY,
-                                    issuer UUID SECONDARY KEY,
+                                    issuer VARCHAR(40) SECONDARY KEY,
                                     reason TEXT,
                                     origin VAR_CHAR(10)
                                 )
