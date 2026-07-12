@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 
@@ -37,18 +38,41 @@ public class DeleteWarning implements CommandExecutor {
             return true;
         }
 
+        String warn;
+
+        try(PreparedStatement ps = databaseConnection.prepareStatement("SELECT culprit,reason FROM warnings WHERE id=?")){
+            ps.setInt(1, Integer.parseInt(args[0]));
+            try(ResultSet resultSet = ps.executeQuery()){
+                if(resultSet.next()) {
+                    warn = "Culprit: " + resultSet.getString("culprit") + "\nReason: " + resultSet.getString("reason");
+                }else{
+                    commandSender.sendMessage("§4No warning with that ID exists!");
+                    return true;
+                }
+            }
+        } catch (SQLException e) {
+            webhookService.sendError("SQL Error:\\n" + e);
+            plugin.getLogger().log(Level.SEVERE,"SQL Error", e);
+            return true;
+        }
+
         try(PreparedStatement ps = databaseConnection.prepareStatement("DELETE FROM warnings WHERE id=?")){
             ps.setInt(1, Integer.parseInt(args[0]));
-            int affected = ps.executeUpdate();
-            if(affected == 1) {
-                commandSender.sendMessage("§2Successfully deleted warning id " + args[0]);
-            }else if(affected == 0){
-                commandSender.sendMessage("§4No warning with that id exists!");
-            }else{
-                commandSender.sendMessage("§4Too many rows deleted, contact a dev immediately!");
-                webhookService.sendError("Too many rows deleted in deleteWarning!");
-                plugin.getLogger().log(Level.SEVERE,"Too many rows deleted in deleteWarning!");
-            }
+            ps.executeUpdate();
+
+            commandSender.sendMessage("§2Successfully deleted warning id " + args[0]);
+
+            webhookService.sendRequest("""
+                        {
+                            "username": "Warnings",
+                            "embeds": [
+                                {
+                                    "title": "Warning Deleted",
+                                    "description": "%s"
+                                }
+                            ]
+                        }
+                        """.formatted(warn), plugin.getConfig().getString("WARN_LOG_WEBHOOK_URL"));
         } catch (SQLException e) {
             webhookService.sendError("SQL Error:\\n" + e);
             plugin.getLogger().log(Level.SEVERE,"SQL Error", e);
