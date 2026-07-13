@@ -1,8 +1,10 @@
 package mplugin.net.minecraftEasyWarnings;
 
 import mplugin.net.minecraftEasyWarnings.resources.WebhookService;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.entities.Member;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -31,11 +33,40 @@ public class DiscordBot extends ListenerAdapter {
     @Override
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
         switch (event.getName()) {
-            case "warn": warn(event); break;
-            case "warnings": warnings(event); break;
-            case "delete_warning": deleteWarning(event); break;
+            case "warn":
+                if(hasRole(Objects.requireNonNull(event.getMember()), plugin.getConfig().getString("DISCORD_MOD_ROLE_ID"))) {
+                    warn(event);
+                }else{
+                    event.reply("No permission").setEphemeral(true).queue();
+                    return;
+                }
+                break;
+            case "warnings":
+                if(hasRole(Objects.requireNonNull(event.getMember()), plugin.getConfig().getString("DISCORD_MOD_ROLE_ID"))) {
+                    warnings(event);
+                }else{
+                    event.reply("No permission").setEphemeral(true).queue();
+                    return;
+                }
+                break;
+            case "delete_warning":
+                if(hasRole(Objects.requireNonNull(event.getMember()), plugin.getConfig().getString("DISCORD_ADMIN_ROLE_ID"))) {
+                    deleteWarning(event);
+                }else{
+                    event.reply("No permission").setEphemeral(true).queue();
+                    return;
+                }
+                break;
         }
+    }
 
+    public boolean hasRole(Member member, String roleId){
+        for(Role role : member.getRoles()){
+            if(role.getId().equals(roleId)){
+                return true;
+            }
+        }
+        return false;
     }
 
     public void warn(SlashCommandInteractionEvent event){
@@ -134,7 +165,7 @@ public class DiscordBot extends ListenerAdapter {
             ps.setInt(1, Integer.parseInt(Objects.requireNonNull(event.getOption("warning_id")).getAsString()));
             try(ResultSet resultSet = ps.executeQuery()){
                 if(resultSet.next()) {
-                    warn = "Culprit: " + resultSet.getString("culprit") + "\\r\\nReason: " + escapeJson(resultSet.getString("reason")) + "\\r\\nDeletor: <@" + event.getUser().getName() + ">";
+                    warn = "Culprit: " + resultSet.getString("culprit") + "\\r\\nReason: " + escapeJson(resultSet.getString("reason")) + "\\r\\nDeletor: <@" + event.getUser().getId() + ">";
                 }else{
                     event.reply("No warnings with that ID exist!").setEphemeral(true).queue();
                     return;
