@@ -15,3 +15,8 @@ commands:
       permission: warnings.moderator
       default: op
       usage: /warnings <Player>
+    deleteWarnings:
+      description: Delete a warning by its ID
+      permission: warnings.admin
+      default: op
+      usage: /deleteWarning <Id>
