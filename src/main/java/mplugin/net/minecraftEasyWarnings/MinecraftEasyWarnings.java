@@ -45,7 +45,7 @@ public final class MinecraftEasyWarnings extends JavaPlugin {
 
         //Load Discord Bot
         try {
-            JDA jda = JDABuilder.createDefault(getConfig().getString("BOT_TOKEN")).addEventListeners(new DiscordBot(this, databaseConnection, webhookService)).build();
+            JDA jda = JDABuilder.createDefault(getConfig().getString("DISCORD_BOT_TOKEN")).addEventListeners(new DiscordBot(this, databaseConnection, webhookService)).build();
             jda.awaitReady();
             jda.updateCommands().addCommands(
                     Commands.slash("warn", "Warn a user -- NOTE: Use their minecraft username!")
