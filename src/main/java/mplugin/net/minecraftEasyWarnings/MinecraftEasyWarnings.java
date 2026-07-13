@@ -49,12 +49,12 @@ public final class MinecraftEasyWarnings extends JavaPlugin {
             jda.awaitReady();
             jda.updateCommands().addCommands(
                     Commands.slash("warn", "Warn a user -- NOTE: Use their minecraft username!")
-                            .addOption(OptionType.STRING, "Minecraft Name", "", true)
-                            .addOption(OptionType.STRING, "Reason", "", true),
+                            .addOption(OptionType.STRING, "minecraft_name", "Minecraft Name", true)
+                            .addOption(OptionType.STRING, "reason", "Reason", true),
                     Commands.slash("warnings", "Check the warnings a user has -- NOTE: Use their minecraft username!")
-                            .addOption(OptionType.STRING, "Minecraft Name", "", true),
-                    Commands.slash("deleteWarning", "Delete a warning by its ID!")
-                            .addOption(OptionType.STRING, "Warning ID", "", true)
+                            .addOption(OptionType.STRING, "minecraft_name", "Minecraft Name", true),
+                    Commands.slash("delete_warning", "Delete a warning by its ID!")
+                            .addOption(OptionType.STRING, "warning_id", "Warning ID", true)
             ).queue();
         } catch (InterruptedException e) {
             webhookService.sendError("Discord Bot Error:\n" + e);

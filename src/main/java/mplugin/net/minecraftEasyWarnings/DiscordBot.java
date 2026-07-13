@@ -33,14 +33,14 @@ public class DiscordBot extends ListenerAdapter {
         switch (event.getName()) {
             case "warn": warn(event); break;
             case "warnings": warnings(event); break;
-            case "deleteWarning": deleteWarning(event); break;
+            case "delete_warning": deleteWarning(event); break;
         }
 
     }
 
     public void warn(SlashCommandInteractionEvent event){
-        OfflinePlayer culprit = Bukkit.getOfflinePlayer(Objects.requireNonNull(event.getOption("Minecraft Name")).getAsString());
-        String reason = Objects.requireNonNull(event.getOption("Reason")).getAsString();
+        OfflinePlayer culprit = Bukkit.getOfflinePlayer(Objects.requireNonNull(event.getOption("minecraft_name")).getAsString());
+        String reason = Objects.requireNonNull(event.getOption("reason")).getAsString();
 
         if(culprit.getName() == null){
             event.reply("Could not resolve culprit's name!").setEphemeral(true).queue();
@@ -81,7 +81,7 @@ public class DiscordBot extends ListenerAdapter {
                     "embeds": [
                         {
                             "title": "New Warning",
-                            "description": "Culprit: %s \\r\\nIssuer: %s\\r\\nReason: \\"%s\\""
+                            "description": "Culprit: %s \\r\\nIssuer: <@%s>\\r\\nReason: \\"%s\\""
                         }
                     ]
                 }
@@ -100,7 +100,7 @@ public class DiscordBot extends ListenerAdapter {
     public void warnings(SlashCommandInteractionEvent event){
         //Database logic
         try(PreparedStatement ps = databaseConnection.prepareStatement("SELECT id,reason FROM warnings WHERE culprit=?")){
-            ps.setString(1, Objects.requireNonNull(event.getOption("Minecraft Name")).getAsString());
+            ps.setString(1, Objects.requireNonNull(event.getOption("minecraft_name")).getAsString());
             try(ResultSet resultSet = ps.executeQuery()) {
                 //Put ResultSet into a List, as it cannot by itself cannot determine size -- required for header
                 List<String> warnings = new ArrayList<>();
@@ -108,7 +108,7 @@ public class DiscordBot extends ListenerAdapter {
                     warnings.add(resultSet.getInt("id") + ": " + resultSet.getString("reason"));
                 }
                 //Send warnings to the player
-                StringBuilder message = new StringBuilder("~~" + Objects.requireNonNull(event.getOption("Minecraft Name")).getAsString() + " " + warnings.size() + "~~");
+                StringBuilder message = new StringBuilder("**" + Objects.requireNonNull(event.getOption("minecraft_name")).getAsString() + " " + warnings.size() + "**");
                 for (String reason : warnings) {
                     message.append("\n").append(reason);
                 }
@@ -122,7 +122,7 @@ public class DiscordBot extends ListenerAdapter {
 
     public void deleteWarning(SlashCommandInteractionEvent event){
         try{
-            Integer.parseInt(Objects.requireNonNull(event.getOption("Warning ID")).getAsString());
+            Integer.parseInt(Objects.requireNonNull(event.getOption("warning_id")).getAsString());
         }catch(NumberFormatException e){
             event.reply("Warning ID must be an integer!").setEphemeral(true).queue();
             return;
@@ -131,10 +131,10 @@ public class DiscordBot extends ListenerAdapter {
         String warn;
 
         try(PreparedStatement ps = databaseConnection.prepareStatement("SELECT culprit,reason FROM warnings WHERE id=?")){
-            ps.setInt(1, Integer.parseInt(Objects.requireNonNull(event.getOption("Warning ID")).getAsString()));
+            ps.setInt(1, Integer.parseInt(Objects.requireNonNull(event.getOption("warning_id")).getAsString()));
             try(ResultSet resultSet = ps.executeQuery()){
                 if(resultSet.next()) {
-                    warn = "Culprit: " + resultSet.getString("culprit") + "\nReason: " + escapeJson(resultSet.getString("reason"));
+                    warn = "Culprit: " + resultSet.getString("culprit") + "\\r\\nReason: " + escapeJson(resultSet.getString("reason")) + "\\r\\nDeletor: <@" + event.getUser().getName() + ">";
                 }else{
                     event.reply("No warnings with that ID exist!").setEphemeral(true).queue();
                     return;
@@ -147,10 +147,10 @@ public class DiscordBot extends ListenerAdapter {
         }
 
         try(PreparedStatement ps = databaseConnection.prepareStatement("DELETE FROM warnings WHERE id=?")){
-            ps.setInt(1, Integer.parseInt(Objects.requireNonNull(event.getOption("Warning ID")).getAsString()));
+            ps.setInt(1, Integer.parseInt(Objects.requireNonNull(event.getOption("warning_id")).getAsString()));
             ps.executeUpdate();
 
-            event.reply("Warning with ID %s was successfully deleted!".formatted(Objects.requireNonNull(event.getOption("Warning ID")).getAsString())).setEphemeral(true).queue();
+            event.reply("Warning with ID %s was successfully deleted!".formatted(Objects.requireNonNull(event.getOption("warning_id")).getAsString())).setEphemeral(true).queue();
 
             webhookService.sendRequest("""
                         {
